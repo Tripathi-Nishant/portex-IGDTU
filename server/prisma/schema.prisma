@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Enums are not natively supported in SQLite with Prisma. 
+// They are converted to String fields for compatibility.
+
+model Organisation {
+  id        String   @id @default(uuid())
+  name      String
+  domain    String   @unique
+  createdAt DateTime @default(now())
+  users     User[]
+}
+
+model User {
+  id             String         @id @default(uuid())
+  organisationId String
+  organisation   Organisation   @relation(fields: [organisationId], references: [id])
+  role           String         @default("EMPLOYEE")
+  email          String         @unique
+  passwordHash   String
+  isLocked       Boolean        @default(false)
+  lockExpiry     DateTime?
+  createdAt      DateTime       @default(now())
+
+  votes          Vote[]
+  ethicsScores   EthicsScore[]
+  anonMappings   AnonMapping[]
+  misuseLog      MisuseLog?
+}
+
+model Complaint {
+  id                 String          @id @default(uuid())
+  trackingCode       String          @unique
+  title              String
+  description        String
+  incidentDate       DateTime
+  incidentLocation   String?
+  accusedName        String?
+  accusedDepartment  String?
+  status             String          @default("PENDING")
+  severity           String          @default("MEDIUM")
+  deadline           DateTime
+  isOverdue          Boolean         @default(false)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  anonMapping        AnonMapping?
+  evidence           Evidence[]
+  votes              Vote[]
+}
+
+model AnonMapping {
+  id          String    @id @default(uuid())
+  complaintId String    @unique
+  complaint   Complaint @relation(fields: [complaintId], references: [id])
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+model Evidence {
+  id          String    @id @default(uuid())
+  complaintId String
+  complaint   Complaint @relation(fields: [complaintId], references: [id])
+  fileUrl     String
+  fileType    String
+  createdAt   DateTime  @default(now())
+}
+
+model Vote {
+  id          String       @id @default(uuid())
+  complaintId String
+  complaint   Complaint    @relation(fields: [complaintId], references: [id])
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  decision    String
+  createdAt   DateTime     @default(now())
+
+  @@unique([complaintId, userId])
+}
+
+model EthicsScore {
+  id                   String   @id @default(uuid())
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id])
+  month                Int
+  year                 Int
+  score                Int      @default(0)
+  fastResolutionsCount Int      @default(0)
+  majorityMatchesCount Int      @default(0)
+  createdAt            DateTime @default(now())
+
+  @@unique([userId, month, year])
+}
+
+model Alert {
+  id                String   @id @default(uuid())
+  type              String   // e.g., "ACCUSED_THRESHOLD", "DEPARTMENT_CLUSTER"
+  severity          String
+  description       String
+  accusedName       String?
+  accusedDepartment String?
+  thresholdReached  Int
+  isAcknowledged    Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model MisuseLog {
+  id            String    @id @default(uuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
+  count         Int       @default(0)
+  lastWarningAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
