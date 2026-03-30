@@ -122,11 +122,6 @@ export default function ComplaintDetail() {
                 <p className="text-slate-500">Location</p>
                 <p className="font-medium text-white">{complaint.incidentLocation || 'Not specified'}</p>
               </div>
-              <div className="pt-4 border-t border-white/10">
-                <p className="text-slate-500 flex items-center"><ShieldAlert size={14} className="mr-1"/> Accused Party</p>
-                <p className="font-medium text-white text-lg">{complaint.accusedName || 'Unknown'}</p>
-                <p className="text-slate-400">{complaint.accusedDepartment}</p>
-              </div>
             </div>
           </div>
 

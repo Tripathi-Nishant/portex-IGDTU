@@ -85,9 +85,6 @@ export default function AlertsPage() {
                     </p>
                     <div className="mt-4 flex space-x-6 text-sm">
                       <div>
-                        <span className="text-slate-500">Accused:</span> <span className="font-semibold">{alert.accusedName}</span>
-                      </div>
-                      <div>
                         <span className="text-slate-500">Department:</span> <span className="font-semibold">{alert.accusedDepartment}</span>
                       </div>
                       <div>
