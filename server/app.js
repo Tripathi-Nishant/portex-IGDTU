@@ -4,26 +4,27 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
 const app = express();
 
 // Middleware
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  'https://protex-igdtu.vercel.app',
   'http://localhost:5173',
   'http://localhost:3000'
 ].filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Check if the origin matches any allowed origin or starts with the Vercel URL
+    const isAllowed = !origin || 
+                     allowedOrigins.includes(origin) || 
+                     (origin.includes('vercel.app') && origin.includes('protex-igdtu'));
+    
+    if (isAllowed) {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -32,8 +33,14 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
 // Serve uploaded files securely
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(uploadsDir));
 
 // Routes
 app.use('/api/auth', require('./src/routes/authRoutes'));
