@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { AlertTriangle, UploadCloud, CheckCircle, ChevronRight, ChevronLeft } from 'lucide-react';
+import { API_URL } from '../config';
 
 export default function SubmitComplaint() {
   const [step, setStep] = useState(1);
@@ -33,7 +34,7 @@ export default function SubmitComplaint() {
       Object.keys(formData).forEach(key => data.append(key, formData[key]));
       files.forEach(file => data.append('evidence', file));
 
-      const res = await axios.post('http://localhost:5000/api/complaints', data, {
+      const res = await axios.post(`${API_URL}/api/complaints`, data, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

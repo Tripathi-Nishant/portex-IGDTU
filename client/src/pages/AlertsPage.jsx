@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { ShieldAlert, AlertTriangle, CheckCircle } from 'lucide-react';
+import { API_URL } from '../config';
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState([]);
@@ -14,7 +15,7 @@ export default function AlertsPage() {
 
   const fetchAlerts = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/alerts');
+      const res = await axios.get(`${API_URL}/api/admin/alerts`);
       setAlerts(res.data.data.alerts);
     } catch (err) {
       console.error(err);
@@ -25,7 +26,7 @@ export default function AlertsPage() {
 
   const handleAcknowledge = async (id) => {
     try {
-      await axios.patch(`http://localhost:5000/api/admin/alerts/${id}/acknowledge`);
+      await axios.patch(`${API_URL}/api/admin/alerts/${id}/acknowledge`);
       fetchAlerts(); // Refresh list
     } catch (err) {
       console.error(err);

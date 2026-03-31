@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Building2, Lock, Mail, User } from 'lucide-react';
+import { API_URL } from '../config';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', formData);
+      const res = await axios.post(`${API_URL}/api/auth/register`, formData);
       login(res.data.token, res.data.data.user);
       navigate('/dashboard');
     } catch (err) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { Award, Star, Zap, Target } from 'lucide-react';
+import { API_URL } from '../config';
 
 export default function Leaderboard() {
   const [leaders, setLeaders] = useState([]);
@@ -10,7 +11,7 @@ export default function Leaderboard() {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/ethics/leaderboard');
+        const res = await axios.get(`${API_URL}/api/ethics/leaderboard`);
         setLeaders(res.data.data.leaderboard);
       } catch (err) {
         console.error(err);

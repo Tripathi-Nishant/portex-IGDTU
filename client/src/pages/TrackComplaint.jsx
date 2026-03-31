@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { Search, Clock, CheckCircle2, XCircle, HelpCircle, BarChart as BarChartIcon } from 'lucide-react';
+import { API_URL } from '../config';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Cell, Tooltip } from 'recharts';
 
 export default function TrackComplaint() {
@@ -21,7 +22,7 @@ export default function TrackComplaint() {
     setComplaint(null);
     
     try {
-      const res = await axios.get(`http://localhost:5000/api/complaints/track/${code.trim()}`);
+      const res = await axios.get(`${API_URL}/api/complaints/track/${code.trim()}`);
       setComplaint(res.data.data.complaint);
       setVoteStats(res.data.data.voteStats);
     } catch (err) {

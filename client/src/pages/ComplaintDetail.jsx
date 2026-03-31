@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { useAuth } from '../context/AuthContext';
 import { AlertCircle, Clock, CheckCircle2, Download, ShieldAlert, BarChart as BarChartIcon } from 'lucide-react';
+import { API_URL } from '../config';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 export default function ComplaintDetail() {
@@ -20,7 +21,7 @@ export default function ComplaintDetail() {
   useEffect(() => {
     const fetchDetail = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/complaints/${id}`);
+        const res = await axios.get(`${API_URL}/api/complaints/${id}`);
         setComplaint(res.data.data.complaint);
         setVoteStats(res.data.data.voteStats);
       } catch (err) {
@@ -36,8 +37,8 @@ export default function ComplaintDetail() {
     if (!vote) return;
     setSubmittingVote(true);
     try {
-      await axios.post(`http://localhost:5000/api/ethics/vote/${id}`, { decision: vote });
-      const res = await axios.get(`http://localhost:5000/api/complaints/${id}`);
+      await axios.post(`${API_URL}/api/ethics/vote/${id}`, { decision: vote });
+      const res = await axios.get(`${API_URL}/api/complaints/${id}`);
       setComplaint(res.data.data.complaint);
       setVoteStats(res.data.data.voteStats);
       alert('Vote submitted successfully');
@@ -100,7 +101,7 @@ export default function ComplaintDetail() {
                 {complaint.evidence.map((ev, idx) => (
                   <li key={ev.id} className="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5">
                     <span className="font-mono text-sm">Evidence_File_{idx+1}.{ev.fileUrl.split('.').pop()}</span>
-                    <a href={`http://localhost:5000${ev.fileUrl}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primaryHover text-sm bg-primary/10 px-3 py-1 rounded-lg">View</a>
+                    <a href={`${API_URL}${ev.fileUrl}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primaryHover text-sm bg-primary/10 px-3 py-1 rounded-lg">View</a>
                   </li>
                 ))}
               </ul>

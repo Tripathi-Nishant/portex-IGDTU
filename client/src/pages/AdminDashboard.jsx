@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { ShieldAlert, FileText, CheckCircle2, TrendingUp, Users } from 'lucide-react';
+import { API_URL } from '../config';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 
 export default function AdminDashboard() {
@@ -11,7 +12,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchKPIs = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/admin/kpis');
+        const res = await axios.get(`${API_URL}/api/admin/kpis`);
         setKpis(res.data.data);
       } catch (err) {
         console.error(err);
